@@ -1,0 +1,1 @@
+args = None  # Placeholder for global arguments
