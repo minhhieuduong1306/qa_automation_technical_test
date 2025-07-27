@@ -63,3 +63,45 @@ class TestTradePage():
       trade_page.close_open_positions(1) # The first open position in the list
       trade_page.close_order()
       trade_page.verify_order_notification_message('Close Order')
+
+   @pytest.mark.parametrize("expiry", ["Good Till Cancelled", "Good Till Day",
+                                       "Specified Date", "Specified Date and Time"])
+   def test_place_limit_buy_order_with_expiry(self, expiry):
+      trade_page = self.login_page.navigate_to_trade()
+      trade_page.filter_markets("All")
+      trade_page.select_market("AUDJPY")
+      trade_page.select_order_type("Limit")
+      trade_page.volume = 10
+      trade_page.price = 95
+      trade_page.stop_loss_points = 500
+      trade_page.take_profit_points = 2500
+      trade_page.select_expiry(expiry)
+      if expiry == "Specified Date":
+         trade_page.set_expiry_date("July 31")
+      elif expiry == "Specified Date and Time":
+         trade_page.set_expiry_date("July 31")
+         trade_page.set_expiry_time("03:00")
+      trade_page.place_buy_order()
+      trade_page.confirm_order()
+      trade_page.verify_order_notification_message('Limit Order Submitted')
+
+   @pytest.mark.parametrize("expiry", ["Good Till Cancelled", "Good Till Day",
+                                       "Specified Date", "Specified Date and Time"])
+   def test_place_stop_buy_order_with_expiry(self, expiry):
+      trade_page = self.login_page.navigate_to_trade()
+      trade_page.filter_markets("All")
+      trade_page.select_market("AUDJPY")
+      trade_page.select_order_type("Stop")
+      trade_page.volume = 10
+      trade_page.price = 98
+      trade_page.stop_loss_points = 1500
+      trade_page.take_profit_points = 1000
+      trade_page.select_expiry(expiry)
+      if expiry == "Specified Date":
+         trade_page.set_expiry_date("July 31")
+      elif expiry == "Specified Date and Time":
+         trade_page.set_expiry_date("July 31")
+         trade_page.set_expiry_time("03:00")
+      trade_page.place_buy_order()
+      trade_page.confirm_order()
+      trade_page.verify_order_notification_message('Stop Order Submitted')

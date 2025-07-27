@@ -20,6 +20,14 @@ class TradePage(Page):
    trade_order_button_xpath = "//button[@data-testid='trade-button-order']"
    confirm_order_button_xpath = "//button[@data-testid='trade-confirmation-button-confirm']"
    oder_notification_message_xpath = "//*[@data-testid='notification-title' and normalize-space()='{0}']"
+   price_input_xpath = "//input[@data-testid='trade-input-price']"
+   expiry_dropdown_xpath = "//*[@data-testid='trade-dropdown-expiry']"
+   expiry_dropdown_value_xpath = "//*[normalize-space()='{0}']"
+   expiry_date_xpath = "//*[@data-testid='trade-input-expiry-date']"
+   chose_expiry_xpath = "//button/*[contains(@aria-label, '{0}')]"
+   expiry_time_xpath = "//*[@data-testid='trade-input-expiry-time']"
+   chose_expiry_hour_xpath = "//*[@data-testid='trade-input-expiry-time-hour']//*[normalize-space()='{0}']"
+   chose_expiry_minute_xpath = "//*[@data-testid='trade-input-expiry-time-minute']//*[normalize-space()='{0}']"
 
    # Open positions
    open_positions_xpath = "//*[@data-testid='tab-asset-order-type-open-positions']"
@@ -176,3 +184,32 @@ class TradePage(Page):
    def close_order(self):
       """Method to close order"""
       self.wait_for_xpath_clickable(self.close_order_button_xpath).click()
+
+   @property
+   def price(self):
+      return self.wait_for_xpath_visible(self.price_input_xpath).get_attribute('value')
+
+   @price.setter
+   def price(self, points):
+      if self.price != str(points):
+         e = self.wait_for_xpath_visible(self.price_input_xpath)
+         e.send_keys(Keys.CONTROL + 'a')
+         e.send_keys(points)
+         e.send_keys(Keys.TAB)
+
+   def select_expiry(self, expiry):
+      """Method to select expiry"""
+      self.wait_for_xpath_clickable(self.expiry_dropdown_xpath).click()
+      self.wait_for_xpath_clickable(self.expiry_dropdown_value_xpath.format(expiry)).click()
+
+   def set_expiry_date(self, date):
+      """Method to set expiry date"""
+      self.wait_for_xpath_clickable(self.expiry_date_xpath).click()
+      self.wait_for_xpath_clickable(self.chose_expiry_xpath.format(date)).click()
+
+   def set_expiry_time(self, time):
+      """Method to set expiry time"""
+      hour, minute = time.split(':')
+      self.wait_for_xpath_clickable(self.expiry_time_xpath).click()
+      self.wait_for_xpath_clickable(self.chose_expiry_hour_xpath.format(hour)).click()
+      self.wait_for_xpath_clickable(self.chose_expiry_minute_xpath.format(minute)).click()
