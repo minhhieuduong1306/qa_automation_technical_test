@@ -14,3 +14,11 @@ Automation tests for Aquariux Trade Page
 - Validate the order placed details with compare to notifications and position
 table details
 - Validate Order History data
+
+---
+
+## Requirments
+- Python
+- ChromeDriver
+- Selenium
+- pytest

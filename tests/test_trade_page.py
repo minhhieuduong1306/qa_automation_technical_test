@@ -1,4 +1,5 @@
 import pytest
+
 from pages_locators.login_page import LoginPage
 
 @pytest.mark.usefixtures("driver")

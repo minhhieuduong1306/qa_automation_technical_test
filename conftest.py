@@ -1,8 +1,9 @@
-import pytest
-from selenium import webdriver
 from urllib.parse import urlparse
 
-import _globals # _globals is used to store global variables
+import pytest
+from selenium import webdriver
+
+import _globals  # _globals is used to store global variables
 
 def pytest_addoption(parser):
    parser.addoption("--url", action="store", default="https://aqxtrader.aquariux.com", help="URL to test")

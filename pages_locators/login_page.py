@@ -1,6 +1,7 @@
+import _globals  # _globals is used to store global variables
+
 from utils import Page
 from pages_locators.trade_page import TradePage
-import _globals  # _globals is used to store global variables
 
 class LoginPage(Page):
    """Class for login page."""

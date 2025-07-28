@@ -1,5 +1,6 @@
-from utils import Page
 from selenium.webdriver.common.keys import Keys
+
+from utils import Page
 
 class TradePage(Page):
    """Class for trade page."""
