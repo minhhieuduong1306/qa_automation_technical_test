@@ -22,6 +22,7 @@ def pytest_configure(config):
 def driver(request):
    # Setup: Initialize the WebDriver
    driver = webdriver.Chrome()
+   driver.maximize_window()
    driver.get(_globals.args.url)
    yield driver
    # Teardown: Quit the WebDriver

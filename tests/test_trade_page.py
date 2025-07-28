@@ -20,6 +20,17 @@ class TestTradePage():
       trade_page.place_buy_order()
       trade_page.confirm_order()
       trade_page.verify_order_notification_message('Market Order Submitted')
+      trade_page.validate_open_positions_order_details("1", "100,000")
+      trade_page.validate_positions_history("Positions", "1", "100,000")
+
+   def test_bulk_close_open_positions(self):
+      trade_page = self.login_page.navigate_to_trade()
+      trade_page.filter_markets("All")
+      trade_page.select_market("GBPAUD")
+      trade_page.open_positions()
+      trade_page.bulk_close("All Positions")
+      trade_page.verify_order_notification_message('Bulk closure of open positions')
+      trade_page.verify_empty_open_positions("GBPAUD")
 
    def test_place_market_buy_order_by_points(self):
       trade_page = self.login_page.navigate_to_trade()
@@ -63,3 +74,75 @@ class TestTradePage():
       trade_page.close_open_positions(1) # The first open position in the list
       trade_page.close_order()
       trade_page.verify_order_notification_message('Close Order')
+
+   @pytest.mark.parametrize("expiry", ["Good Till Cancelled", "Good Till Day",
+                                       "Specified Date", "Specified Date and Time"])
+   def test_place_limit_buy_order_with_expiry(self, expiry):
+      trade_page = self.login_page.navigate_to_trade()
+      trade_page.filter_markets("All")
+      trade_page.select_market("AUDJPY")
+      trade_page.select_order_type("Limit")
+      trade_page.volume = 10
+      trade_page.price = 95
+      trade_page.stop_loss_points = 500
+      trade_page.take_profit_points = 2500
+      trade_page.select_expiry(expiry)
+      if expiry == "Specified Date":
+         trade_page.set_expiry_date("July 31")
+      elif expiry == "Specified Date and Time":
+         trade_page.set_expiry_date("July 31")
+         trade_page.set_expiry_time("03:00")
+      trade_page.place_buy_order()
+      trade_page.confirm_order()
+      trade_page.verify_order_notification_message('Limit Order Submitted')
+
+   @pytest.mark.parametrize("expiry", ["Good Till Cancelled", "Good Till Day",
+                                       "Specified Date", "Specified Date and Time"])
+   def test_place_stop_buy_order_with_expiry(self, expiry):
+      trade_page = self.login_page.navigate_to_trade()
+      trade_page.filter_markets("All")
+      trade_page.select_market("AUDJPY")
+      trade_page.select_order_type("Stop")
+      trade_page.volume = 10
+      trade_page.price = 98
+      trade_page.stop_loss_points = 1500
+      trade_page.take_profit_points = 1000
+      trade_page.select_expiry(expiry)
+      if expiry == "Specified Date":
+         trade_page.set_expiry_date("July 31")
+      elif expiry == "Specified Date and Time":
+         trade_page.set_expiry_date("July 31")
+         trade_page.set_expiry_time("03:00")
+      trade_page.place_buy_order()
+      trade_page.confirm_order()
+      trade_page.verify_order_notification_message('Stop Order Submitted')
+
+   @pytest.mark.parametrize("expiry", ["Good Till Cancelled", "Good Till Day",
+                                       "Specified Date", "Specified Date and Time"])
+   def test_edit_pending_order(self, expiry):
+      trade_page = self.login_page.navigate_to_trade()
+      trade_page.filter_markets("All")
+      trade_page.select_market("AUDJPY")
+      trade_page.pending_orders()
+      trade_page.edit_pending_order(1) # The first pending order in the list
+      trade_page.edit_price = 97.5
+      trade_page.edit_stop_loss_points = 1000
+      trade_page.edit_take_profit_points = 500
+      trade_page.edit_expiry(expiry)
+      if expiry == "Specified Date":
+         trade_page.edit_expiry_date("August 1")
+      elif expiry == "Specified Date and Time":
+         trade_page.edit_expiry_date("August 1")
+         trade_page.edit_expiry_time("00:00")
+      trade_page.update_buy_order()
+      trade_page.confirm_update_order()
+      trade_page.verify_order_notification_message('Stop Order Updated')
+
+   def test_bulk_delete_pending_orders(self):
+      trade_page = self.login_page.navigate_to_trade()
+      trade_page.filter_markets("All")
+      trade_page.select_market("AUDJPY")
+      trade_page.pending_orders()
+      trade_page.bulk_delete()
+      trade_page.verify_order_notification_message('Bulk deletion of pending orders')
+      trade_page.verify_empty_pending_orders("AUDJPY")
